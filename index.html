@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Shizuku</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='22' fill='%230f1419'/><path d='M18 14l-6 12h5l-2 8 10-14h-5l3-6z' fill='%23fff'/></svg>">
+</head>
+<body>
+
+<!-- 手机外框（桌面端居中显示） -->
+<div class="phone" id="phone">
+
+  <!-- 顶栏 -->
+  <header class="appbar">
+    <button class="iconbtn" id="btnMenu" aria-label="打开抽屉">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+    <span class="appbar-title">Shizuku</span>
+    <button class="iconbtn" id="btnOverflow" aria-label="更多选项">
+      <svg viewBox="0 0 24 24"><path d="M12 8a2 2 0 100-4 2 2 0 000 4zm0 6a2 2 0 100-4 2 2 0 000 4zm0 6a2 2 0 100-4 2 2 0 000 4z"/></svg>
+    </button>
+  </header>
+
+  <!-- 主内容 -->
+  <main class="content" id="content">
+
+    <!-- ============ 页面：Shizuku（主页） ============ -->
+    <section class="page active" id="page-home">
+
+      <!-- 状态卡片 -->
+      <div class="card status-card" id="statusCard">
+        <div class="status-row" id="statusStopped">
+          <span class="status-dot dot-stopped"></span>
+          <span class="status-text">Shizuku 未运行</span>
+        </div>
+        <div class="status-row hidden" id="statusRunning">
+          <span class="status-dot dot-running">
+            <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+          </span>
+          <span class="status-text">Shizuku 正在运行</span>
+        </div>
+        <div class="status-meta hidden" id="statusMeta">
+          <div class="meta-row"><span>API 版本</span><b>31</b></div>
+          <div class="meta-row"><span>Shizuku 版本</span><b>13.5.4</b></div>
+          <div class="meta-row"><span>uid</span><b>2000</b></div>
+        </div>
+      </div>
+
+      <!-- 正在使用 Shizuku 的应用（运行时显示） -->
+      <div class="card hidden" id="appsCard">
+        <div class="section-label">应用列表</div>
+        <div class="empty-apps">0 个应用正在使用 Shizuku</div>
+      </div>
+
+      <!-- 通过 root 启动 -->
+      <div class="card">
+        <div class="section-label">通过 root 启动</div>
+        <p class="section-desc">如果您的设备已经 root，直接启动即可。</p>
+        <div class="btn-row">
+          <button class="btn tonal" data-start>启动</button>
+        </div>
+      </div>
+
+      <!-- 通过无线调试启动 -->
+      <div class="card">
+        <div class="section-label">通过无线调试启动</div>
+        <p class="section-desc">通过无线调试启动适用于 Android 11 或以上版本。这种启动方式无需连接电脑。由于系统限制，每次重新启动后都需要再次进行启动步骤。</p>
+
+        <div class="step-block">
+          <div class="step-title">启用无线调试</div>
+          <ol class="steps">
+            <li>在网络上搜索如何为您的机型启用“开发者选项”</li>
+            <li>启用“开发者选项”和“USB 调试”</li>
+            <li>进入“无线调试”</li>
+            <li>启用“无线调试”</li>
+          </ol>
+        </div>
+
+        <div class="step-block">
+          <div class="step-title">配对（仅需一次）</div>
+          <ol class="steps">
+            <li>在 Shizuku 内开始配对</li>
+            <li>启用无线调试</li>
+            <li>点按“无线调试”中的“使用配对码配对设备”</li>
+            <li>在 Shizuku 的通知中填入配对码</li>
+          </ol>
+        </div>
+
+        <div class="step-block">
+          <div class="step-title">启动 Shizuku</div>
+          <p class="section-desc">如果无法启动，尝试禁用并启用无线调试。</p>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn outlined" id="btnPair">配对</button>
+          <button class="btn filled" data-start>启动</button>
+        </div>
+      </div>
+
+      <!-- 通过连接电脑启动 -->
+      <div class="card">
+        <div class="section-label">通过连接电脑启动</div>
+        <p class="section-desc">该启动方式适用于未 root 且运行 Android 10 及以下版本的设备。很不幸，该启动方式需要连接电脑。由于系统限制，每次重新启动后都需要再次进行启动步骤。</p>
+
+        <div class="expandable">
+          <button class="expand-head" data-expand>
+            <span>什么是 adb？</span>
+            <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="expand-body">
+            <p class="section-desc">Android 调试桥（adb）是一个通用命令行工具，其允许您与模拟器实例或连接的 Android 设备进行通信。</p>
+          </div>
+        </div>
+
+        <div class="expandable">
+          <button class="expand-head" data-expand>
+            <span>安装 adb</span>
+            <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="expand-body">
+            <ol class="steps">
+              <li>下载由 Google 提供的“SDK 平台工具”并解压至任意文件夹</li>
+              <li>在解压文件夹中打开 PowerShell / Terminal</li>
+              <li>输入 <code>adb</code>，若显示一长串帮助文本即表示成功</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="expandable">
+          <button class="expand-head" data-expand>
+            <span>启动 Shizuku</span>
+            <svg class="chev" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="expand-body">
+            <p class="section-desc">复制指令并粘贴到终端中，如无问题您将会在 Shizuku 中看到已启动成功。</p>
+            <pre class="codeblock"><code>adb shell sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh</code></pre>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn tonal" data-start>已通过计算机启动</button>
+        </div>
+      </div>
+
+      <p class="footer-note">本页面为 Shizuku 界面 1:1 复刻整活，所有按钮均无实际作用。</p>
+    </section>
+
+    <!-- ============ 页面：使用 Shizuku ============ -->
+    <section class="page" id="page-use">
+      <div class="card">
+        <div class="section-label">使用 Shizuku</div>
+        <p class="section-desc">通过 Shizuku，应用可以以普通用户 shell（ADB）或 root 身份执行命令并调用系统隐藏 API。开发者可在应用中加入 Shizuku SDK 来请求授权。</p>
+        <div class="list-item">
+          <div class="li-text"><b>shizuku:api</b><div class="li-sub">以 shell/root 身份调用系统服务</div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-text"><b>shizuku:provider</b><div class="li-sub">在授权范围内访问 ContentProvider</div></div>
+        </div>
+        <div class="list-item">
+          <div class="li-text"><b>使用文档</b><div class="li-sub">developer.shizuku.app（假的，点了也没用）</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 页面：开发者选项 ============ -->
+    <section class="page" id="page-dev">
+      <div class="card">
+        <div class="section-label">开发者选项</div>
+        <div class="pref-item">
+          <div class="li-text"><b>通知使用情况</b><div class="li-sub">在有应用使用 Shizuku 时显示通知</div></div>
+          <label class="switch"><input type="checkbox" data-fakeswitch><span></span></label>
+        </div>
+        <div class="pref-item">
+          <div class="li-text"><b>绕过用户确认</b><div class="li-sub">请求权限时不再弹出确认对话框</div></div>
+          <label class="switch"><input type="checkbox" data-fakeswitch><span></span></label>
+        </div>
+        <div class="pref-item">
+          <div class="li-text"><b>沙盒调试</b><div class="li-sub">调试 shizuku_server 进程</div></div>
+          <label class="switch"><input type="checkbox" data-fakeswitch><span></span></label>
+        </div>
+      </div>
+      <div class="card">
+        <button class="pref-button" id="btnStop">停止 Shizuku 服务</button>
+      </div>
+    </section>
+
+    <!-- ============ 页面：关于 ============ -->
+    <section class="page" id="page-about">
+      <div class="card about-card">
+        <div class="about-icon">S</div>
+        <div class="about-name">Shizuku</div>
+        <div class="about-ver">版本 13.5.4 (130504)</div>
+      </div>
+      <div class="card">
+        <div class="list-item" data-toast="开源许可：MIT / Apache-2.0（假的）">
+          <div class="li-text"><b>开源许可</b></div>
+          <svg class="chev right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"/></svg>
+        </div>
+        <div class="list-item" data-toast="整活仓库，跳转了也没用">
+          <div class="li-text"><b>GitHub</b></div>
+          <svg class="chev right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"/></svg>
+        </div>
+        <div class="list-item" data-toast="官网也是假的">
+          <div class="li-text"><b>官网</b></div>
+          <svg class="chev right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6z"/></svg>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 抽屉 -->
+  <div class="scrim hidden" id="scrim"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo">S</div>
+      <div class="drawer-name">Shizuku</div>
+      <div class="drawer-sub">13.5.4</div>
+    </div>
+    <nav class="drawer-nav">
+      <button class="nav-item active" data-page="home">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Shizuku</span>
+      </button>
+      <button class="nav-item" data-page="use">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <span>使用 Shizuku</span>
+      </button>
+      <button class="nav-item" data-page="about">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <span>关于</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- 溢出菜单 -->
+  <div class="menu hidden" id="overflowMenu">
+    <button data-page="dev">开发者选项</button>
+    <button data-toast="通知权限：已授予（并没有）">通知</button>
+    <button data-toast="帮助：本页啥也帮不了">帮助</button>
+    <button data-page="about">关于</button>
+  </div>
+
+  <!-- 配对中全屏遮罩 -->
+  <div class="overlay hidden" id="pairOverlay">
+    <div class="spinner"></div>
+    <div class="overlay-text">正在搜索配对服务…</div>
+  </div>
+
+  <!-- 启动中全屏遮罩 -->
+  <div class="overlay hidden" id="startOverlay">
+    <div class="spinner"></div>
+    <div class="overlay-text">正在启动 Shizuku…</div>
+  </div>
+
+  <!-- 配对码对话框 -->
+  <div class="dialog-wrap hidden" id="pairDialog">
+    <div class="dialog">
+      <div class="dialog-title">输入配对码</div>
+      <div class="dialog-body">
+        <p class="section-desc">请在“无线调试”中查看配对码并输入。</p>
+        <div class="code-inputs" id="codeInputs">
+          <input maxlength="1" inputmode="numeric">
+          <input maxlength="1" inputmode="numeric">
+          <input maxlength="1" inputmode="numeric">
+          <input maxlength="1" inputmode="numeric">
+          <input maxlength="1" inputmode="numeric">
+          <input maxlength="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn text" id="pairCancel">取消</button>
+        <button class="btn text" id="pairOk">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast / Snackbar -->
+  <div class="snackbar hidden" id="snackbar"></div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
